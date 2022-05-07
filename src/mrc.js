@@ -133,9 +133,8 @@ class MixedRealityCapture {
 
         this.#camera = new THREE.PerspectiveCamera( calibration.camera.fov, calibration.camera.width / calibration.camera.height, this.#near, this.#far );
     
-        // TODO: Replace these with the position and orientation parameters from the calibration
-        this.#camera.position.set( 1.7507181, 1.590937, 1.658595 );
-        this.#camera.lookAt( 0, 1.6513390, 0 );
+        this.#camera.position.fromArray( calibration.camera.position );
+        this.#camera.quaternion.fromArray( calibration.camera.orientation );
 
         // Creating render targets for the foreground and background layers
 
