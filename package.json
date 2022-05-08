@@ -1,11 +1,11 @@
 {
   "name": "reality-mixer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Mixed Reality Capture for WebXR and Three.js",
   "type": "module",
   "main": "src/mrc.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile-schema": "ajv compile -s schemas/calibration-schema.json -o src/validate-schema.js --code-esm"
   },
   "repository": {
     "type": "git",
@@ -29,5 +29,8 @@
   "homepage": "https://github.com/fabio914/reality-mixer-js#readme",
   "dependencies": {
     "three": "^0.140.0"
+  },
+  "devDependencies": {
+    "ajv-cli": "git@github.com:willfarrell/ajv-cli.git#15c4f0153e25da2737d673f0c027e3ab0f5b1ec8"
   }
 }

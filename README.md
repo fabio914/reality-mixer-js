@@ -11,8 +11,6 @@ Keep in mind that this is still just a prototype and that I'm not a frontend dev
 ## TO-DOs
 
  - Create a calibration page to allow users to calibrate the position and orientation of their camera, and to configure their chroma key (green screen).
- 
- - Allow the Mixed Reality Capture session to be initialized with a JSON file with a saved calibration.
 
 ## How to test the example
 
@@ -85,5 +83,42 @@ mixedRealityCapture.onWindowResize();
 renderer.render( scene, camera );
 
 mixedRealityCapture.render( renderer.xr, scene );
+
+```
+
+Alternatively, you can instantiate the calibration with a JSON provided by the user:
+
+```javascript
+
+// ...
+
+const json = `
+{ 
+    "schemaVersion": 1, 
+    "camera": { 
+        "width": 1280, 
+        "height": 720, 
+        "fov": 38, 
+        "position": [0, 1.5, 0], 
+        "orientation": [0, 0, 0, 1] 
+    }, 
+    "chromaKey": {
+        "color": [0, 1, 0],
+        "similarity": 0.25,
+        "smoothness": 0
+    },
+    "delay": 4
+}
+`;
+
+const calibrationData = JSON.parse( json );
+
+const calibration = MRC.Calibration.fromData( calibrationData );
+
+// ...
+
+mixedRealityCapture = new MRC.MixedRealityCapture( calibration );
+
+// ...
 
 ```
