@@ -5,9 +5,57 @@
         <title>Calibration parser</title>
         <style>
             body { margin: 0; }
+
+            .popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #303841;
+                border-radius: 4px;
+                font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+                color: #EFEFEF;
+                overflow: hidden;
+            }
+
+            .editor {
+                font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+                border: none;
+                box-shadow: none;
+                outline: none;
+                background-color: #303841;
+                color: #EFEFEF;
+                resize: none;
+                margin: 0px;
+            }
         </style>
     </head>
     <body style="background-color:black;">
+
+        <div class="popup">
+            <div style="background-color: #50565E; padding: 8px">
+                Paste your Mixed Reality calibration below:
+            </div>
+            <textarea id="calibration-editor" rows="20" cols="80" class="editor" spellcheck="false">
+{ 
+    "schemaVersion": 1, 
+    "camera": { 
+        "width": 1280, 
+        "height": 720, 
+        "fov": 38, 
+        "position": [0, 1.5, 0], 
+        "orientation": [0, 0, 0, 1] 
+    }, 
+    "chromaKey": {
+        "color": [0, 1, 0],
+        "similarity": 0.25,
+        "smoothness": 0
+    },
+    "delay": 4
+}
+            </textarea>
+            <div style="padding: 8px; white-space: pre-wrap; background-color: green;" id="result"></div>
+        </div>
 
         <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
 
@@ -23,29 +71,27 @@
         <script type="module">
             import * as MRC from 'reality-mixer';
 
-            const json = `
-            { 
-                "schemaVersion": 1, 
-                "camera": { 
-                    "width": 1280, 
-                    "height": 720, 
-                    "fov": 38, 
-                    "position": [0, 1.5, 0], 
-                    "orientation": [0, 0, 0, 1] 
-                }, 
-                "chromaKey": {
-                    "color": [0, 1, 0],
-                    "similarity": 0.25,
-                    "smoothness": 0
-                },
-                "delay": 4
+            function validateCalibration() {
+                let result = document.getElementById("result");
+                const maybeJson = document.getElementById("calibration-editor").value;
+
+                try {
+                    const json = JSON.parse(maybeJson);
+                    const calibration = MRC.Calibration.fromData(json);
+                    console.log(calibration);
+
+                    result.style.backgroundColor = "green";
+                    result.innerText = "Valid";
+                } catch (error) {
+                    console.log(error);
+                    result.innerText = error;
+                    result.style.backgroundColor = "red";
+                }
             }
-            `;
 
-            const calibrationData = JSON.parse( json );
-
-            const calibration = MRC.Calibration.fromData( calibrationData );
-            console.log(calibration);
+            document.getElementById("calibration-editor").oninput = validateCalibration;
+            validateCalibration();
         </script>
+
     </body>
 </html>

@@ -58,9 +58,8 @@ class Calibration {
         // We're not checking if the orientation is a valid unit quaternion
 
         if (!validate(data)) {
-            console.log(validate.errors);
-            return null;
-        } 
+            throw JSON.stringify(validate.errors, null, 2);
+        }
 
         const cameraCalibration = new CameraCalibration(
             data.camera.width,
