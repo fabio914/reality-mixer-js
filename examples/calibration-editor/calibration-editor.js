@@ -21,8 +21,22 @@ const exampleCalibrationJSON = `
 
 function CalibrationInput(
     onCompleted,
-    initialCalibrationJSON = exampleCalibrationJSON,
+    initialCalibrationJSON = null
 ) {
+    let initialJSON;
+
+    if (initialCalibrationJSON == null) {
+        let persistedJSON = localStorage.getItem("calibration-v1");
+
+        if (persistedJSON == null) {
+            initialJSON = exampleCalibrationJSON;
+        } else {
+            initialJSON = persistedJSON;
+        }
+    } else {
+        initialJSON = initialCalibrationJSON;
+    }
+
     let popupDiv = document.createElement("div");
 
     popupDiv.style = `
@@ -62,7 +76,7 @@ function CalibrationInput(
     editor.rows = 20;
     editor.cols = 80;
     editor.spellcheck = false;
-    editor.value = initialCalibrationJSON;
+    editor.value = initialJSON;
 
     function validateCalibration() {
         const maybeJson = editor.value;
@@ -78,7 +92,9 @@ function CalibrationInput(
             link.innerText = "Click here to continue...";
             link.href = "#";
             link.style.color = "#EFEFEF";
+
             link.onclick = function() {
+                localStorage.setItem("calibration-v1", maybeJson);
                 onCompleted(popupDiv, calibration);
                 return false;
             }
