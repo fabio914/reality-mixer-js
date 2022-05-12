@@ -1,0 +1,91 @@
+{
+    "type": "object",
+    "properties": {
+        "schemaVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1
+        },
+        "camera": {
+            "type": "object",
+            "properties": {
+                "width": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "height": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "fov": {
+                    "type": "number",
+                    "minimum": 1
+                },
+                "position": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "orientation": {
+                    "type": "array",
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "required": [
+                "width",
+                "height",
+                "fov",
+                "position",
+                "orientation"
+            ]
+        },
+        "chromaKey": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                    }
+                },
+                "similarity": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "smoothness": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                }
+            },
+            "required": [
+                "color",
+                "similarity",
+                "smoothness"
+            ]
+        },
+        "delay": {
+            "type": "integer",
+            "minimum": 0
+        }
+    },
+    "required": [
+        "schemaVersion", 
+        "camera", 
+        "chromaKey", 
+        "delay"
+    ],
+    "additionalProperties": false
+}

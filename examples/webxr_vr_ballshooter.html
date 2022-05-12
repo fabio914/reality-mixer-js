@@ -24,6 +24,7 @@
 
             import * as THREE from 'three';
             import * as MRC from 'reality-mixer';
+            import { CalibrationInput } from './calibration/calibration-input.js';
 
             import { BoxLineGeometry } from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js';
             import { VRButton } from '../node_modules/three/examples/jsm/webxr/VRButton.js';
@@ -44,10 +45,23 @@
 
             const clock = new THREE.Clock();
 
-            init();
-            animate();
+            // Mixed Reality Calibration Input
 
-            function init() {
+            function onCalibrationInput(editor, calibration) {
+                editor.parentNode.removeChild(editor);
+                console.log(calibration);
+
+                init(calibration);
+                animate();
+            }
+
+            const calibrationInput = CalibrationInput(onCalibrationInput);
+
+            document.body.appendChild(calibrationInput);
+
+            //
+
+            function init(calibration) {
 
                 scene = new THREE.Scene();
                 scene.background = new THREE.Color( 0x505050 );
@@ -88,11 +102,6 @@
                 }
 
                 // Mixed Reality Capture
-
-                const cameraCalibration = new MRC.CameraCalibration();
-                const chromaKey = new MRC.ChromaKey();
-                const delayInFrames = 5;
-                const calibration = new MRC.Calibration( cameraCalibration, chromaKey, delayInFrames );
 
                 mixedRealityCapture = new MRC.MixedRealityCapture( calibration );
 

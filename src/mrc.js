@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import validate from './validate-schema.js';
 
 class CameraCalibration {
     width;
@@ -51,6 +52,36 @@ class Calibration {
         this.camera = camera;
         this.chromaKey = chromaKey;
         this.delayInFrames = Math.max(0, delayInFrames);
+    }
+
+    static fromData(data) {
+        // We're not checking if the orientation is a valid unit quaternion
+
+        if (!validate(data)) {
+            throw JSON.stringify(validate.errors, null, 2);
+        }
+
+        const cameraCalibration = new CameraCalibration(
+            data.camera.width,
+            data.camera.height,
+            data.camera.fov,
+            data.camera.position,
+            data.camera.orientation
+        )
+
+        const chromaKey = new ChromaKey(
+            data.chromaKey.color,
+            data.chromaKey.similarity,
+            data.chromaKey.smoothness
+        )
+
+        const calibration = new Calibration(
+            cameraCalibration,
+            chromaKey,
+            data.delay
+        )
+
+        return calibration;
     }
 }
 
