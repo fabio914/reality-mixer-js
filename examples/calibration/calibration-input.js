@@ -1,4 +1,5 @@
 import { Calibration } from 'reality-mixer';
+import { CalibrationWindow, CalibrationWindowHeader } from './calibration-window.js';
 
 const exampleCalibrationJSON = `
 { 
@@ -37,24 +38,14 @@ function CalibrationInput(
         initialJSON = initialCalibrationJSON;
     }
 
-    let popupDiv = document.createElement("div");
+    let calibrationWindow = CalibrationWindow();
 
-    popupDiv.style = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #303841;
-        border-radius: 4px;
-        font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-        color: #EFEFEF;
-        overflow: hidden;
-    `
+    let header = CalibrationWindowHeader("Calibration Input");
 
     let titleDiv = document.createElement("div");
 
     titleDiv.style = "background-color: #50565E; padding: 8px";
-    titleDiv.innerText = "Paste or drag and drop your Mixed Reality calibration below:"
+    titleDiv.innerText = "Paste or drag and drop your Mixed Reality calibration below:";
 
     let resultDiv = document.createElement("div");
 
@@ -95,7 +86,7 @@ function CalibrationInput(
 
             link.onclick = function() {
                 localStorage.setItem("calibration-v1", maybeJson);
-                onCompleted(popupDiv, calibration);
+                onCompleted(calibrationWindow, calibration);
                 return false;
             }
 
@@ -109,11 +100,12 @@ function CalibrationInput(
     editor.oninput = validateCalibration;
     validateCalibration();
 
-    popupDiv.appendChild(titleDiv);
-    popupDiv.appendChild(editor);
-    popupDiv.appendChild(resultDiv);
+    calibrationWindow.appendChild(header);
+    calibrationWindow.appendChild(titleDiv);
+    calibrationWindow.appendChild(editor);
+    calibrationWindow.appendChild(resultDiv);
 
-    popupDiv.ondrop = function(e) {
+    calibrationWindow.ondrop = function(e) {
         e.preventDefault();
 
         let file = e.dataTransfer.files[0],
@@ -128,7 +120,7 @@ function CalibrationInput(
         return false;
     }
 
-    return popupDiv;
+    return calibrationWindow;
 }
 
 export { CalibrationInput };
