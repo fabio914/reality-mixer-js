@@ -8,10 +8,6 @@ Unlike the original [Reality Mixer](https://github.com/fabio914/RealityMixer) or
 
 Keep in mind that this is still just a prototype and that I'm not a frontend developer. Feel free to open PRs and contribute to the project.
 
-## TO-DOs
-
- - Create a calibration page to allow users to calibrate the position and orientation of their camera, and to configure their chroma key (green screen).
-
 ## How to test the example
 
  - Clone this repository.
