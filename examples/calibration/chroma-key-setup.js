@@ -100,7 +100,9 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     function animateChromaSetup() {
         requestAnimationFrame( animateChromaSetup );
 
-        // TODO: Update shader values
+        middleMaterial.uniforms.keyColor.value = chromaKeyColor;
+        middleMaterial.uniforms.similarity.value = chromaKeySimilarity;
+        middleMaterial.uniforms.smoothness.value = chromaKeySmoothness;
 
         canvasCtx.drawImage(webcam, 0, 0, webcamCanvas.width, webcamCanvas.height);
 
@@ -131,6 +133,39 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
 
     // TODO: Call callback with result
 
+    const hexToRgb = hex =>
+        hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i ,(m, r, g, b) => '#' + r + r + g + g + b + b)
+            .substring(1)
+            .match(/.{2}/g)
+            .map(x => parseInt(x, 16)/255.0)
+
+    let calibrationWindow = CalibrationWindow();
+
+    let header = CalibrationWindowHeader("Chroma Key Setup");
+
+    let colorDiv = document.createElement("div");
+    colorDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+
+    let colorLabel = document.createElement("label");
+    colorLabel.innerText = "Chroma Key Color ";
+
+    let colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.value = "#00FF00";
+
+    colorInput.oninput = function() {
+        chromaKeyColor = hexToRgb(this.value);
+    }
+
+    colorDiv.appendChild(colorLabel);
+    colorDiv.appendChild(colorInput);
+
+    // TODO: Add sliders for similarity and smoothness
+
+    calibrationWindow.appendChild(header);
+    calibrationWindow.appendChild(colorDiv);
+
+    chromaKeyBackground.appendChild(calibrationWindow);
     return chromaKeyBackground;
 }
 
