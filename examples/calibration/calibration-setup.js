@@ -3,6 +3,7 @@ import { CalibrationWindow, CalibrationWindowHeader } from './calibration-window
 import { CalibrationInput } from './calibration-input.js';
 import { VideoSizeSetup } from './video-size-setup.js';
 import { ChromaKeySetup } from './chroma-key-setup.js';
+import { CameraPoseSetup } from './camera-pose-setup.js';
 
 function CalibrationSetup(onCompleted) {
     let initialJSON;
@@ -33,19 +34,29 @@ function CalibrationSetup(onCompleted) {
     createNewLink.onclick = function() {
         calibrationBackground.removeChild(calibrationWindow);
 
-        let sizeSetup = VideoSizeSetup(function(editor, videoWidth, videoHeight) {
-            calibrationBackground.removeChild(sizeSetup);
+        let sizeSetup = VideoSizeSetup(
+            function(editor, videoWidth, videoHeight) {
+                calibrationBackground.removeChild(sizeSetup);
 
-            let cKeySetup = ChromaKeySetup(videoWidth, videoHeight, 
-                function(editor, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness) {
-                    calibrationBackground.removeChild(cKeySetup);
+                let cKeySetup = ChromaKeySetup(videoWidth, videoHeight, 
+                    function(editor, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness) {
+                        calibrationBackground.removeChild(cKeySetup);
 
-                    // TODO: Next step
-                }
-            );
+                        let poseSetup = CameraPoseSetup(videoWidth, videoHeight, 
+                            function(editor, cameraPosition, cameraOrientation, cameraFov) {
+                                calibrationBackground.removeChild(poseSetup);
 
-            calibrationBackground.appendChild(cKeySetup);
-        });
+                                // TODO: Build calibration and present Calibration Input window
+                            }
+                        );
+
+                        calibrationBackground.appendChild(poseSetup);
+                    }
+                );
+
+                calibrationBackground.appendChild(cKeySetup);
+            }
+        );
 
         calibrationBackground.appendChild(sizeSetup);
         return false;

@@ -61,8 +61,8 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
         });
 
     let webcamCanvas = document.createElement('canvas');
-    webcamCanvas.width = 1024;
-    webcamCanvas.height = 1024;
+    webcamCanvas.width = videoWidth;
+    webcamCanvas.height = videoHeight;
 
     let canvasCtx = webcamCanvas.getContext('2d');
     canvasCtx.fillStyle = '#000000';
@@ -72,6 +72,7 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     webcamTexture.minFilter = THREE.LinearFilter;
     webcamTexture.magFilter = THREE.LinearFilter;
 
+    // FIXME: Fix video position when video aspect ratio doesn't match window aspect ratio
     let outputCamera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000 );
     let outputScene = new THREE.Scene();
 
@@ -162,8 +163,24 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
 
     // TODO: Add sliders for similarity and smoothness
 
+    let linkDiv = document.createElement("div");
+    linkDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+
+    let link = document.createElement("a");
+    link.innerText = "Continue";
+    link.href = "#";
+    link.style.color = "#EFEFEF";
+
+    link.onclick = function() {
+        onCompleted(chromaKeyBackground, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness);
+        return false;
+    }
+
+    linkDiv.appendChild(link);
+
     calibrationWindow.appendChild(header);
     calibrationWindow.appendChild(colorDiv);
+    calibrationWindow.appendChild(linkDiv);
 
     chromaKeyBackground.appendChild(calibrationWindow);
     return chromaKeyBackground;
