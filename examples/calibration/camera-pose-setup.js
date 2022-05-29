@@ -20,7 +20,10 @@ function CameraPoseSetup(
         background-color: black;
     `
 
-    let webcam = document.createElement('video');
+    let targetImage = new Image();
+    targetImage.src = "./images/target.png";
+
+    let webcam = document.createElement("video");
 
     let constraints = { audio: false, video: { width: videoWidth, height: videoHeight } };
 
@@ -76,32 +79,6 @@ function CameraPoseSetup(
 
     // Controllers
 
-    function buildController( data ) {
-
-        let geometry, material;
-
-        switch ( data.targetRayMode ) {
-
-            case 'tracked-pointer':
-
-                geometry = new THREE.BufferGeometry();
-                geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) );
-                geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) );
-
-                material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
-
-                return new THREE.Line( geometry, material );
-
-            case 'gaze':
-
-                geometry = new THREE.RingGeometry( 0.02, 0.04, 32 ).translate( 0, 0, - 1 );
-                material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
-                return new THREE.Mesh( geometry, material );
-
-        }
-
-    }
-
     function onSelectStart() {
 
         this.userData.isSelecting = true;
@@ -117,31 +94,11 @@ function CameraPoseSetup(
     controller1 = renderer.xr.getController( 0 );
     controller1.addEventListener( 'selectstart', onSelectStart );
     controller1.addEventListener( 'selectend', onSelectEnd );
-    controller1.addEventListener( 'connected', function ( event ) {
-
-        this.add( buildController( event.data ) );
-
-    } );
-    controller1.addEventListener( 'disconnected', function () {
-
-        this.remove( this.children[ 0 ] );
-
-    } );
     scene.add( controller1 );
 
     controller2 = renderer.xr.getController( 1 );
     controller2.addEventListener( 'selectstart', onSelectStart );
     controller2.addEventListener( 'selectend', onSelectEnd );
-    controller2.addEventListener( 'connected', function ( event ) {
-
-        this.add( buildController( event.data ) );
-
-    } );
-    controller2.addEventListener( 'disconnected', function () {
-
-        this.remove( this.children[ 0 ] );
-
-    } );
     scene.add( controller2 );
 
     // The XRControllerModelFactory will automatically fetch controller models
@@ -206,13 +163,59 @@ function CameraPoseSetup(
 
     // TODO: Observe window resize
 
+    // State
+
+    let cameraPosition = null;
+    let cameraTopLeftPosition = null;
+    let cameraBottomRightPosition = null;
+
     function render() {
 
         // Update webcam texture
 
         canvasCtx.drawImage(webcam, 0, 0, webcamCanvas.width, webcamCanvas.height);
 
-        // TODO: Update target overlay (based on current target)
+        if (cameraPosition == null) {
+            // First step
+
+            const targetSize = 0.75 * Math.min(videoWidth, videoHeight);
+
+            canvasCtx.drawImage(
+                targetImage, 
+                (videoWidth - targetSize)/2.0, 
+                (videoHeight - targetSize)/2.0, 
+                targetSize, 
+                targetSize
+            );
+
+        } else if (cameraTopLeftPosition == null) {
+            // Second step
+
+            const targetSize = 0.1 * Math.min(videoWidth, videoHeight);
+
+            canvasCtx.drawImage(
+                targetImage, 
+                (0.25 * videoWidth) - (targetSize/2.0), 
+                (0.25 * videoHeight) - (targetSize/2.0), 
+                targetSize, 
+                targetSize
+            );
+
+        } else if (cameraBottomRightPosition == null) {
+            // Third step
+
+            const targetSize = 0.1 * Math.min(videoWidth, videoHeight);
+
+            canvasCtx.drawImage(
+                targetImage, 
+                (0.75 * videoWidth) - (targetSize/2.0), 
+                (0.75 * videoHeight) - (targetSize/2.0), 
+                targetSize, 
+                targetSize
+            );
+        } else {
+            // Completed!
+        }
 
         if (canvasTexture) 
             canvasTexture.needsUpdate = true;
