@@ -161,6 +161,8 @@ function CameraPoseSetup(
     room.geometry.translate( 0, 3, 0 );
     scene.add( room );
 
+    scene.add( new THREE.HemisphereLight() );
+
     // TODO: Observe window resize
 
     // State
@@ -169,10 +171,55 @@ function CameraPoseSetup(
     let cameraTopLeftPosition = null;
     let cameraBottomRightPosition = null;
 
-    function render() {
+    function addSphere(position) {
+        const geometry = new THREE.IcosahedronGeometry(0.05, 3);
+        const object = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial( { color: 0xffff00 } ));
+        object.position.copy(position);
+        scene.add( object );
+    }
 
-        // Update webcam texture
+    function controllerUpdate() {
+        if (controller2.userData.isSelecting) {
 
+            const minimumDistance = 1.5;
+
+            if (cameraPosition == null) {
+                // First step
+                addSphere(controller2.position);
+                cameraPosition = new THREE.Vector3().copy(controller2.position);
+                cameraTopLeftPosition = null;
+                cameraBottomRightPosition = null;
+            } else if (cameraTopLeftPosition == null) {
+                // Second step
+
+                if (cameraPosition.distanceTo(controller2.position) > minimumDistance) {
+                    addSphere(controller2.position);
+                    cameraTopLeftPosition = new THREE.Vector3().copy(controller2.position);
+                    cameraBottomRightPosition = null;
+                }
+            } else if (cameraBottomRightPosition == null) {
+                // Third step
+
+                if (cameraPosition.distanceTo(controller2.position) > minimumDistance) {
+                    addSphere(controller2.position);
+                    cameraBottomRightPosition = new THREE.Vector3().copy(controller2.position);
+                }
+            } else {
+                // Completed!
+
+                console.log("cameraPosition:");
+                console.log(cameraPosition);
+                console.log("cameraTopLeftPosition:");
+                console.log(cameraTopLeftPosition);
+                console.log("cameraBottomRightPosition");
+                console.log(cameraBottomRightPosition);
+            }
+
+            controller2.userData.isSelecting = false;
+        }
+    }
+
+    function canvasUpdate() {
         canvasCtx.drawImage(webcam, 0, 0, webcamCanvas.width, webcamCanvas.height);
 
         if (cameraPosition == null) {
@@ -219,7 +266,11 @@ function CameraPoseSetup(
 
         if (canvasTexture) 
             canvasTexture.needsUpdate = true;
-        
+    }
+
+    function render() {
+        controllerUpdate();
+        canvasUpdate();
         renderer.render( scene, camera );
     }
 
