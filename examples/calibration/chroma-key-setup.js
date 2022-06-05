@@ -148,10 +148,11 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     colorDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
 
     let colorLabel = document.createElement("label");
-    colorLabel.innerText = "Chroma Key Color ";
+    colorLabel.innerText = "Chroma Key Color";
 
     let colorInput = document.createElement("input");
     colorInput.type = "color";
+    colorInput.style.marginLeft = "8px";
     colorInput.value = "#00FF00";
 
     colorInput.oninput = function() {
@@ -161,7 +162,77 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     colorDiv.appendChild(colorLabel);
     colorDiv.appendChild(colorInput);
 
-    // TODO: Add sliders for similarity and smoothness
+    let similarityDiv = document.createElement("div");
+    similarityDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+
+    let similarityLabel = document.createElement("label");
+    similarityLabel.innerText = "Similarity";
+
+    let similarityRangeInput = document.createElement("input");
+    similarityRangeInput.type = "range";
+    similarityRangeInput.style.width = "300px";
+    similarityRangeInput.style.marginLeft = "8px";
+    similarityRangeInput.min = 0;
+    similarityRangeInput.max = 1;
+    similarityRangeInput.step = 0.01;
+    similarityRangeInput.value = chromaKeySimilarity;
+
+    let similarityTextInput = document.createElement("input");
+    similarityTextInput.type = "numeric";
+    similarityTextInput.style.marginLeft = "8px";
+    similarityTextInput.value = chromaKeySimilarity;
+
+    similarityRangeInput.oninput = function() {
+        chromaKeySimilarity = parseFloat(this.value);
+        similarityTextInput.value = chromaKeySimilarity;
+    }
+
+    similarityTextInput.oninput = function() {
+        const floatValue = parseFloat(this.value);
+        if(isNaN(floatValue) || floatValue < 0.0 || floatValue > 1.0) { return }
+        chromaKeySimilarity = floatValue;
+        similarityRangeInput.value = chromaKeySimilarity;
+    }
+
+    similarityDiv.appendChild(similarityLabel);
+    similarityDiv.appendChild(similarityRangeInput);
+    similarityDiv.appendChild(similarityTextInput);
+
+    let smoothnessDiv = document.createElement("div");
+    smoothnessDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+
+    let smoothnessLabel = document.createElement("label");
+    smoothnessLabel.innerText = "Smoothness";
+
+    let smoothnessRangeInput = document.createElement("input");
+    smoothnessRangeInput.type = "range";
+    smoothnessRangeInput.style.width = "300px";
+    smoothnessRangeInput.style.marginLeft = "8px";
+    smoothnessRangeInput.min = 0;
+    smoothnessRangeInput.max = 1;
+    smoothnessRangeInput.step = 0.01;
+    smoothnessRangeInput.value = chromaKeySmoothness;
+
+    let smoothnessTextInput = document.createElement("input");
+    smoothnessTextInput.type = "numeric";
+    smoothnessTextInput.style.marginLeft = "8px";
+    smoothnessTextInput.value = chromaKeySmoothness;
+
+    smoothnessDiv.appendChild(smoothnessLabel);
+    smoothnessDiv.appendChild(smoothnessRangeInput);
+    smoothnessDiv.appendChild(smoothnessTextInput);
+
+    smoothnessRangeInput.oninput = function() {
+        chromaKeySmoothness = parseFloat(this.value);
+        smoothnessTextInput.value = chromaKeySmoothness;
+    }
+
+    smoothnessTextInput.oninput = function() {
+        const floatValue = parseFloat(this.value);
+        if(isNaN(floatValue) || floatValue < 0.0 || floatValue > 1.0) { return }
+        chromaKeySmoothness = floatValue;
+        smoothnessRangeInput.value = chromaKeySmoothness;
+    }
 
     let linkDiv = document.createElement("div");
     linkDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
@@ -180,6 +251,8 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
 
     calibrationWindow.appendChild(header);
     calibrationWindow.appendChild(colorDiv);
+    calibrationWindow.appendChild(similarityDiv);
+    calibrationWindow.appendChild(smoothnessDiv);
     calibrationWindow.appendChild(linkDiv);
 
     chromaKeyBackground.appendChild(calibrationWindow);
