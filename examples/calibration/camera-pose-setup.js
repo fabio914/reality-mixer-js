@@ -96,6 +96,8 @@ function CameraPoseSetup(
     camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 );
     camera.position.set( 0, 1.6, 0 );
 
+    let spectator = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 );
+
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
@@ -314,10 +316,29 @@ function CameraPoseSetup(
             canvasTexture.needsUpdate = true;
     }
 
+    function renderSpectator() {
+        if (!renderer.xr.isPresenting) { return }
+
+        const xrCam = renderer.xr.getCamera();
+        spectator.position.copy(xrCam.position);
+        spectator.quaternion.copy(xrCam.quaternion);
+
+        const currentRenderTarget = renderer.getRenderTarget();
+
+        renderer.xr.isPresenting = false;
+
+        renderer.setRenderTarget(null);
+        renderer.render(scene, spectator);
+
+        renderer.setRenderTarget(currentRenderTarget);
+        renderer.xr.isPresenting = true;
+    }
+
     function render() {
         controllerUpdate();
         canvasUpdate();
         renderer.render( scene, camera );
+        renderSpectator();
     }
 
     renderer.setAnimationLoop( render );
