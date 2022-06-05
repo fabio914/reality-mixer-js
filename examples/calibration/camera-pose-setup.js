@@ -19,16 +19,15 @@ function computeCalibration(
   
     const focalDistanceInPixels = measuredDiagonalDistanceInPixels/(2.0 * Math.tan(0.5 * measuredDiagonalAngle));
     const verticalFov = 2.0 * Math.atan2(videoHeight * 0.5, focalDistanceInPixels);
-  
-    // TODO: Double check this
-    const topLeftNormalized = new THREE.Vector3().copy(topLeft).normalize();
-    const bottomRightNormalized = new THREE.Vector3().copy(bottomRight).normalize();
-    const center = new THREE.Vector3().copy(topLeftNormalized).add(bottomRightNormalized).divideScalar(2.0).normalize();
-  
+
+    const center = new THREE.Vector3().copy(topLeft).add(bottomRight);
+    const lookAtMatrix = new THREE.Matrix4().lookAt(new THREE.Vector3(0, 0, 0), center, new THREE.Vector3(0, 1, 0));
+    const orientation = new THREE.Quaternion().setFromRotationMatrix(lookAtMatrix);
+
     return {
         verticalFov: verticalFov * (180.0/Math.PI),
         position: cameraPosition,
-        orientation: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, -1), center)
+        orientation: orientation
     };
 }
 
