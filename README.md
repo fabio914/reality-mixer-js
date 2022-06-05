@@ -17,6 +17,12 @@ Keep in mind that this is still just a prototype and that I'm not a frontend dev
 | webxr_vr_ballshooter | <img src="screenshots/webxr_vr_ballshooter.jpg" width="300" /> |
 | webxr_vr_paint | <img src="screenshots/webxr_vr_paint.jpg" width="300" /> |
 
+## TO-DOs
+
+ - Continue iterating on the Calibration.
+ 
+ - Create a static website to host the examples.
+
 ## How to test the example
 
  - Clone this repository.
