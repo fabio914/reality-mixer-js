@@ -130,10 +130,6 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
 
     // TODO: Observe resize
 
-    // TODO: Add window with input
-
-    // TODO: Call callback with result
-
     const hexToRgb = hex =>
         hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i ,(m, r, g, b) => '#' + r + r + g + g + b + b)
             .substring(1)
