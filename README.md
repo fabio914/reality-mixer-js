@@ -8,9 +8,20 @@ Unlike the original [Reality Mixer](https://github.com/fabio914/RealityMixer) or
 
 Keep in mind that this is still just a prototype and that I'm not a frontend developer. Feel free to open PRs and contribute to the project.
 
-## TO-DOs
+[YouTube video](https://youtu.be/t0TmLT84J_0)
 
- - Create a calibration page to allow users to calibrate the position and orientation of their camera, and to configure their chroma key (green screen).
+## Screenshots
+
+| Example | Screenshot |
+|---------|---------------|
+| webxr_vr_ballshooter | <img src="screenshots/webxr_vr_ballshooter.jpg" width="300" /> |
+| webxr_vr_paint | <img src="screenshots/webxr_vr_paint.jpg" width="300" /> | 
+
+## Requirements
+
+ - PC VR headset that's compatible with WebXR (e.g. Oculus Rift S).
+ - Google Chrome.
+ - Webcam and a green screen. Alternatively, you can use your iPhone/iPad as a camera (without a green screen) with the [LIV Camera app](https://apps.apple.com/us/app/liv-camera/id1482671526) and [NDI Webcam Input](https://www.ndi.tv/tools/).
 
 ## How to test the example
 
@@ -20,14 +31,14 @@ Keep in mind that this is still just a prototype and that I'm not a frontend dev
  
  - Run `http-server` to start the HTTP server (that can be downloaded by running `npm install -g http-server`).
 
- - WebXR and `navigator.mediaDevices` require HTTPS. You could use a tool like [localtunnel](https://github.com/localtunnel/localtunnel) for testing. You can run `npm install -g localtunnel` to download it and then you can run `lt --port 8080 --subdomin 127.0.0.1` in a separate terminal.
+ - WebXR and `navigator.mediaDevices` require HTTPS (unless you're accessing it via `localhost`). You could use a tool like [localtunnel](https://github.com/localtunnel/localtunnel) for testing. You can run `npm install -g localtunnel` to download it and then you can run `lt --port 8080 --subdomin 127.0.0.1` in a separate terminal.
  
- - Open your browser and navigate to `https://{your HTTPS domain}/examples/webxr_vr_ballshooter.html`
+ - Open your browser and navigate to `https://{your HTTPS domain}/examples/webxr_vr_ballshooter.html` (or `https://127.0.0.1:8080/examples/webxr_vr_ballshooter.html`)
 
  Your browser will ask for permission to access your camera, and it'll ask for permission to use your VR headset once you click on the WebXR button. 
  
- You'll need to edit the code (the calibration) to set the correct position, orientation, and fov of your camera, and the correct parameters for your green screen.
- 
+ You'll need to complete the calibration before starting the example, and you'll need to recalibrate whenever you change your guardian boundary / play area, change the position and orientation of your camera, or change your green screen.
+
  ## API
  
  ```javascript
@@ -122,3 +133,10 @@ mixedRealityCapture = new MRC.MixedRealityCapture( calibration );
 // ...
 
 ```
+
+## TO-DOs
+
+ - Continue iterating on the Calibration (fixes, delay, adustments, etc).
+ 
+ - Create a static website to host the examples.
+ 

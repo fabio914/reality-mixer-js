@@ -129,7 +129,7 @@ class MixedRealityCapture {
         let webcam = document.createElement('video');
         this.#webcam = webcam;
 
-        var constraints = { audio: false, video: { width: calibration.camera.width, height: calibration.camera.height } };
+        let constraints = { audio: false, video: { width: calibration.camera.width, height: calibration.camera.height } };
 
         navigator.mediaDevices
             .getUserMedia(constraints)
