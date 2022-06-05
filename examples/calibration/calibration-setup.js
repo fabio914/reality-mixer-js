@@ -1,4 +1,4 @@
-import { Calibration } from 'reality-mixer';
+import { CameraCalibration, ChromaKey, Calibration } from 'reality-mixer';
 import { CalibrationWindow, CalibrationWindowHeader } from './calibration-window.js';
 import { CalibrationInput } from './calibration-input.js';
 import { VideoSizeSetup } from './video-size-setup.js';
@@ -46,7 +46,33 @@ function CalibrationSetup(onCompleted) {
                             function(editor, cameraFov, cameraPosition, cameraOrientation) {
                                 calibrationBackground.removeChild(poseSetup);
 
-                                // TODO: Build calibration and present Calibration Input window
+                                const delay = 4;
+
+                                const calibrationJSON = {
+                                    schemaVersion: 1,
+                                    camera: {
+                                        width: videoWidth,
+                                        height: videoHeight,
+                                        fov: cameraFov,
+                                        position: cameraPosition,
+                                        orientation: cameraOrientation
+                                    },
+                                    chromaKey: {
+                                        color: chromaKeyColor,
+                                        similarity: chromaKeySimilarity,
+                                        smoothness: chromaKeySmoothness
+                                    },
+                                    delay: delay
+                                };
+
+                                const calibrationJSONString = JSON.stringify(calibrationJSON, null, 4);
+
+                                let calibrationInput = CalibrationInput(function(editor, calibration) {
+                                    calibrationBackground.removeChild(calibrationInput);
+                                    onCompleted(calibrationBackground, calibration);
+                                }, calibrationJSONString);
+
+                                calibrationBackground.appendChild(calibrationInput);
                             }
                         );
 
@@ -76,6 +102,7 @@ function CalibrationSetup(onCompleted) {
         calibrationBackground.removeChild(calibrationWindow);
 
         let calibrationInput = CalibrationInput(function(editor, calibration) {
+            calibrationBackground.removeChild(calibrationInput);
             onCompleted(calibrationBackground, calibration);
         });
 

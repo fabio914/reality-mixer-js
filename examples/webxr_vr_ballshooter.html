@@ -24,7 +24,7 @@
 
             import * as THREE from 'three';
             import * as MRC from 'reality-mixer';
-            import { CalibrationInput } from './calibration/calibration-input.js';
+            import { CalibrationSetup } from './calibration/calibration-setup.js';
 
             import { BoxLineGeometry } from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js';
             import { VRButton } from '../node_modules/three/examples/jsm/webxr/VRButton.js';
@@ -47,7 +47,7 @@
 
             // Mixed Reality Calibration Input
 
-            function onCalibrationInput(editor, calibration) {
+            function onCalibrationSetup(editor, calibration) {
                 editor.parentNode.removeChild(editor);
                 console.log(calibration);
 
@@ -55,9 +55,9 @@
                 animate();
             }
 
-            const calibrationInput = CalibrationInput(onCalibrationInput);
+            const calibrationSetup = CalibrationSetup(onCalibrationSetup);
 
-            document.body.appendChild(calibrationInput);
+            document.body.appendChild(calibrationSetup);
 
             //
 

@@ -248,7 +248,13 @@ function CameraPoseSetup(
                 console.log("Calibration result:");
                 console.log(result);
 
+                // Stop WebXR rendering
+                renderer.setAnimationLoop(null);
+                renderer.xr.enabled = false;
+                renderer.xr.getSession().end();
+
                 onCompleted(
+                    sceneBackground,
                     result.verticalFov,
                     result.position.toArray(),
                     result.orientation.toArray()

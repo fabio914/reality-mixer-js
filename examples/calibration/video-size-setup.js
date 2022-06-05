@@ -31,8 +31,6 @@ function VideoSizeSetup(onCompleted) {
     heightDiv.appendChild(heightLabel);
     heightDiv.appendChild(heightInput);
 
-    // TODO Validate input
-
     let linkDiv = document.createElement("div");
     linkDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
 
@@ -42,7 +40,14 @@ function VideoSizeSetup(onCompleted) {
     link.style.color = "#EFEFEF";
 
     link.onclick = function() {
-        onCompleted(calibrationWindow, widthInput.value, heightInput.value);
+        const videoWidth = parseInt(widthInput.value);
+        const videoHeight = parseInt(heightInput.value);
+
+        if (videoWidth == NaN || videoHeight == NaN || videoWidth <= 0 || videoHeight <= 0) {
+            return false;
+        }
+
+        onCompleted(calibrationWindow, videoWidth, videoHeight);
         return false;
     }
 
