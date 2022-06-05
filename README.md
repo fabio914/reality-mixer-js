@@ -8,6 +8,15 @@ Unlike the original [Reality Mixer](https://github.com/fabio914/RealityMixer) or
 
 Keep in mind that this is still just a prototype and that I'm not a frontend developer. Feel free to open PRs and contribute to the project.
 
+[YouTube video](https://youtu.be/t0TmLT84J_0)
+
+## Screenshots
+
+| Example | Screenshot |
+|---------|---------------|
+| webxr_vr_ballshooter | <img src="screenshots/webxr_vr_ballshooter.jpg" width="300" /> |
+| webxr_vr_paint | <img src="screenshots/webxr_vr_paint.jpg" width="300" /> |
+
 ## How to test the example
 
  - Clone this repository.
