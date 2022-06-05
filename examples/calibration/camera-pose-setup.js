@@ -4,6 +4,34 @@ import { VRButton } from '../../node_modules/three/examples/jsm/webxr/VRButton.j
 import { XRControllerModelFactory } from '../../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { BoxLineGeometry } from '../../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js';
 
+function computeCalibration(
+    videoWidth,
+    videoHeight,
+    cameraPosition,
+    cameraTopLeftPosition,
+    cameraBottomRightPosition
+) {
+    const topLeft = new THREE.Vector3().copy(cameraTopLeftPosition).sub(cameraPosition);
+    const bottomRight = new THREE.Vector3().copy(cameraBottomRightPosition).sub(cameraPosition);
+  
+    const measuredDiagonalDistanceInPixels = Math.sqrt((videoWidth/2.0) * (videoWidth/2.0) + (videoHeight/2.0) * (videoHeight/2.0));
+    const measuredDiagonalAngle = topLeft.angleTo(bottomRight);
+  
+    const focalDistanceInPixels = measuredDiagonalDistanceInPixels/(2.0 * Math.tan(0.5 * measuredDiagonalAngle));
+    const verticalFov = 2.0 * Math.atan2(videoHeight * 0.5, focalDistanceInPixels);
+  
+    // TODO: Double check this
+    const topLeftNormalized = new THREE.Vector3().copy(topLeft).normalize();
+    const bottomRightNormalized = new THREE.Vector3().copy(bottomRight).normalize();
+    const center = new THREE.Vector3().copy(topLeftNormalized).add(bottomRightNormalized).divideScalar(2.0).normalize();
+  
+    return {
+        verticalFov: verticalFov * (180.0/Math.PI),
+        position: cameraPosition,
+        orientation: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, -1), center)
+    };
+}
+
 function CameraPoseSetup(
     videoWidth, 
     videoHeight, 
@@ -207,12 +235,24 @@ function CameraPoseSetup(
             } else {
                 // Completed!
 
-                console.log("cameraPosition:");
-                console.log(cameraPosition);
-                console.log("cameraTopLeftPosition:");
-                console.log(cameraTopLeftPosition);
-                console.log("cameraBottomRightPosition");
-                console.log(cameraBottomRightPosition);
+                // TODO: Add step to adjust delay and confirm calibration before returning
+
+                const result = computeCalibration(
+                    videoWidth,
+                    videoHeight,
+                    cameraPosition,
+                    cameraTopLeftPosition,
+                    cameraBottomRightPosition
+                );
+
+                console.log("Calibration result:");
+                console.log(result);
+
+                onCompleted(
+                    result.verticalFov,
+                    result.position.toArray(),
+                    result.orientation.toArray()
+                );
             }
 
             controller2.userData.isSelecting = false;
@@ -275,9 +315,6 @@ function CameraPoseSetup(
     }
 
     renderer.setAnimationLoop( render );
-
-    // TODO: Call callback after finishing calibration
-
     return sceneBackground;
 }
 

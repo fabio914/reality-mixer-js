@@ -43,7 +43,7 @@ function CalibrationSetup(onCompleted) {
                         calibrationBackground.removeChild(cKeySetup);
 
                         let poseSetup = CameraPoseSetup(videoWidth, videoHeight, 
-                            function(editor, cameraPosition, cameraOrientation, cameraFov) {
+                            function(editor, cameraFov, cameraPosition, cameraOrientation) {
                                 calibrationBackground.removeChild(poseSetup);
 
                                 // TODO: Build calibration and present Calibration Input window
