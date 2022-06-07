@@ -39,7 +39,7 @@ function CalibrationSetup(onCompleted) {
                 calibrationBackground.removeChild(sizeSetup);
 
                 let cKeySetup = ChromaKeySetup(videoWidth, videoHeight, 
-                    function(editor, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness) {
+                    function(editor, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness, crop) {
                         calibrationBackground.removeChild(cKeySetup);
 
                         let poseSetup = CameraPoseSetup(videoWidth, videoHeight, 
@@ -60,7 +60,8 @@ function CalibrationSetup(onCompleted) {
                                     chromaKey: {
                                         color: chromaKeyColor,
                                         similarity: chromaKeySimilarity,
-                                        smoothness: chromaKeySmoothness
+                                        smoothness: chromaKeySmoothness,
+                                        crop: crop
                                     },
                                     delay: delay
                                 };

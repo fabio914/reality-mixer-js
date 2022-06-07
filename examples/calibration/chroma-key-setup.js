@@ -205,7 +205,13 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     link.style.color = "#EFEFEF";
 
     link.onclick = function() {
-        onCompleted(chromaKeyBackground, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness);
+        onCompleted(
+            chromaKeyBackground, 
+            chromaKeyColor, 
+            chromaKeySimilarity, 
+            chromaKeySmoothness,
+            [cropLeft, cropRight, cropBottom, cropTop]
+        );
         return false;
     }
 

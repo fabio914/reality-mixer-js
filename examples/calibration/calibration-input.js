@@ -14,7 +14,8 @@ const exampleCalibrationJSON = `
     "chromaKey": {
         "color": [0, 1, 0],
         "similarity": 0.25,
-        "smoothness": 0
+        "smoothness": 0,
+        "crop": [0, 0, 0, 0]
     },
     "delay": 4
 }
