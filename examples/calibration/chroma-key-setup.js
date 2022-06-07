@@ -1,10 +1,15 @@
 import * as THREE from 'three';
-import { CalibrationWindow, CalibrationWindowHeader } from './calibration-window.js';
+import { CalibrationWindow, CalibrationWindowHeader, CalibrationRangeInput } from './calibration-window.js';
 
 function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     let chromaKeyColor = [0, 1, 0];
     let chromaKeySimilarity = 0.1;
     let chromaKeySmoothness = 0;
+
+    let cropLeft = 0;
+    let cropRight = 0;
+    let cropBottom = 0;
+    let cropTop = 0;
 
     const vertexShader = `
         varying vec2 vUv;
@@ -18,10 +23,17 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
         uniform vec3 keyColor;
         uniform float similarity;
         uniform float smoothness;
+        uniform vec4 crop; // left, right, bottom, top
+
         varying vec2 vUv;
         uniform sampler2D map;
 
         void main() {
+            if (vUv.x < crop.x || vUv.x > (1.0 - crop.y) || vUv.y < crop.z || vUv.y > (1.0 - crop.w)) {
+                gl_FragColor = vec4(1, 1, 1, 0);
+                return;
+            }
+
             vec4 videoColor = texture2D(map, vUv);
      
             float Y1 = 0.299 * keyColor.r + 0.587 * keyColor.g + 0.114 * keyColor.b;
@@ -83,7 +95,8 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
             map: { value: webcamTexture },
             keyColor: { value: chromaKeyColor },
             similarity: { value: chromaKeySimilarity },
-            smoothness: { value: chromaKeySmoothness }
+            smoothness: { value: chromaKeySmoothness },
+            crop: { value: [cropLeft, cropRight, cropBottom, cropTop] }
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
@@ -104,6 +117,7 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
         middleMaterial.uniforms.keyColor.value = chromaKeyColor;
         middleMaterial.uniforms.similarity.value = chromaKeySimilarity;
         middleMaterial.uniforms.smoothness.value = chromaKeySmoothness;
+        middleMaterial.uniforms.crop.value = [cropLeft, cropRight, cropBottom, cropTop];
 
         canvasCtx.drawImage(webcam, 0, 0, webcamCanvas.width, webcamCanvas.height);
 
@@ -158,77 +172,29 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     colorDiv.appendChild(colorLabel);
     colorDiv.appendChild(colorInput);
 
-    let similarityDiv = document.createElement("div");
-    similarityDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+    let similarityDiv = CalibrationRangeInput("Similarity ", chromaKeySimilarity, function(newValue) {
+        chromaKeySimilarity = newValue;
+    });
 
-    let similarityLabel = document.createElement("label");
-    similarityLabel.innerText = "Similarity";
+    let smoothnessDiv = CalibrationRangeInput("Smoothness ", chromaKeySmoothness, function(newValue) {
+        chromaKeySmoothness = newValue;
+    });
 
-    let similarityRangeInput = document.createElement("input");
-    similarityRangeInput.type = "range";
-    similarityRangeInput.style.width = "300px";
-    similarityRangeInput.style.marginLeft = "8px";
-    similarityRangeInput.min = 0;
-    similarityRangeInput.max = 1;
-    similarityRangeInput.step = 0.01;
-    similarityRangeInput.value = chromaKeySimilarity;
+    let cropTopDiv = CalibrationRangeInput("Crop Top   ", cropTop, function(newValue) {
+        cropTop = newValue;
+    });
 
-    let similarityTextInput = document.createElement("input");
-    similarityTextInput.type = "numeric";
-    similarityTextInput.style.marginLeft = "8px";
-    similarityTextInput.value = chromaKeySimilarity;
+    let cropBottomDiv = CalibrationRangeInput("Crop Bottom", cropBottom, function(newValue) {
+        cropBottom = newValue;
+    });
 
-    similarityRangeInput.oninput = function() {
-        chromaKeySimilarity = parseFloat(this.value);
-        similarityTextInput.value = chromaKeySimilarity;
-    }
+    let cropLeftDiv = CalibrationRangeInput("Crop Left  ", cropLeft, function(newValue) {
+        cropLeft = newValue;
+    });
 
-    similarityTextInput.oninput = function() {
-        const floatValue = parseFloat(this.value);
-        if(isNaN(floatValue) || floatValue < 0.0 || floatValue > 1.0) { return }
-        chromaKeySimilarity = floatValue;
-        similarityRangeInput.value = chromaKeySimilarity;
-    }
-
-    similarityDiv.appendChild(similarityLabel);
-    similarityDiv.appendChild(similarityRangeInput);
-    similarityDiv.appendChild(similarityTextInput);
-
-    let smoothnessDiv = document.createElement("div");
-    smoothnessDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
-
-    let smoothnessLabel = document.createElement("label");
-    smoothnessLabel.innerText = "Smoothness";
-
-    let smoothnessRangeInput = document.createElement("input");
-    smoothnessRangeInput.type = "range";
-    smoothnessRangeInput.style.width = "300px";
-    smoothnessRangeInput.style.marginLeft = "8px";
-    smoothnessRangeInput.min = 0;
-    smoothnessRangeInput.max = 1;
-    smoothnessRangeInput.step = 0.01;
-    smoothnessRangeInput.value = chromaKeySmoothness;
-
-    let smoothnessTextInput = document.createElement("input");
-    smoothnessTextInput.type = "numeric";
-    smoothnessTextInput.style.marginLeft = "8px";
-    smoothnessTextInput.value = chromaKeySmoothness;
-
-    smoothnessDiv.appendChild(smoothnessLabel);
-    smoothnessDiv.appendChild(smoothnessRangeInput);
-    smoothnessDiv.appendChild(smoothnessTextInput);
-
-    smoothnessRangeInput.oninput = function() {
-        chromaKeySmoothness = parseFloat(this.value);
-        smoothnessTextInput.value = chromaKeySmoothness;
-    }
-
-    smoothnessTextInput.oninput = function() {
-        const floatValue = parseFloat(this.value);
-        if(isNaN(floatValue) || floatValue < 0.0 || floatValue > 1.0) { return }
-        chromaKeySmoothness = floatValue;
-        smoothnessRangeInput.value = chromaKeySmoothness;
-    }
+    let cropRightDiv = CalibrationRangeInput("Crop Right ", cropRight, function(newValue) {
+        cropRight = newValue;
+    });
 
     let linkDiv = document.createElement("div");
     linkDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
@@ -249,6 +215,11 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     calibrationWindow.appendChild(colorDiv);
     calibrationWindow.appendChild(similarityDiv);
     calibrationWindow.appendChild(smoothnessDiv);
+    calibrationWindow.appendChild(cropTopDiv);
+    calibrationWindow.appendChild(cropBottomDiv);
+    calibrationWindow.appendChild(cropLeftDiv);
+    calibrationWindow.appendChild(cropRightDiv);
+    
     calibrationWindow.appendChild(linkDiv);
 
     chromaKeyBackground.appendChild(calibrationWindow);
