@@ -1,6 +1,6 @@
 {
   "name": "reality-mixer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Mixed Reality Capture for WebXR and Three.js",
   "type": "module",
   "main": "src/mrc.js",
