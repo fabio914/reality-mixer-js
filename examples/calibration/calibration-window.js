@@ -75,9 +75,7 @@ function CalibrationRangeInput(
     textInput.style.marginLeft = "8px";
     textInput.value = value;
 
-    divElement.appendChild(labelElement);
-    divElement.appendChild(rangeInput);
-    divElement.appendChild(textInput);
+    divElement.append(labelElement, rangeInput, textInput);
 
     rangeInput.oninput = function() {
         const newValue = parseFloat(this.value);
