@@ -27,15 +27,18 @@ class ChromaKey {
     color; // r g b 0...1
     similarity; // 0...1
     smoothness; // 0...1
+    crop; // left right bottom top 0...1
   
     constructor(
         color = [0.0, 1.0, 0.0],
         similarity = 0.25,
-        smoothness = 0.0
+        smoothness = 0.0,
+        crop = [0, 0, 0, 0]
     ) {
-        this.color = color;
+        this.color = color.map(x => Math.max(0, Math.min(1, x)));
         this.similarity = Math.max(0, Math.min(1, similarity));
         this.smoothness = Math.max(0, Math.min(1, smoothness));
+        this.crop = crop.map(x => Math.max(0, Math.min(1, x)));
     }
 }
 
@@ -72,7 +75,8 @@ class Calibration {
         const chromaKey = new ChromaKey(
             data.chromaKey.color,
             data.chromaKey.similarity,
-            data.chromaKey.smoothness
+            data.chromaKey.smoothness,
+            data.chromaKey.crop
         )
 
         const calibration = new Calibration(
@@ -205,6 +209,7 @@ class MixedRealityCapture {
                 keyColor: { value: calibration.chromaKey.color },
                 similarity: { value: calibration.chromaKey.similarity },
                 smoothness: { value: calibration.chromaKey.smoothness },
+                crop: { value: calibration.chromaKey.crop }
             },
             vertexShader: this.#vertexShader(),
             fragmentShader: this.#fragmentShader(),
@@ -332,10 +337,17 @@ class MixedRealityCapture {
             uniform vec3 keyColor;
             uniform float similarity;
             uniform float smoothness;
+            uniform vec4 crop; // left, right, bottom, top
+
             varying vec2 vUv;
             uniform sampler2D map;
 
             void main() {
+                if (vUv.x < crop.x || vUv.x > (1.0 - crop.y) || vUv.y < crop.z || vUv.y > (1.0 - crop.w)) {
+                    gl_FragColor = vec4(1, 1, 1, 0);
+                    return;
+                }
+
                 vec4 videoColor = texture2D(map, vUv);
          
                 float Y1 = 0.299 * keyColor.r + 0.587 * keyColor.g + 0.114 * keyColor.b;

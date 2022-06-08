@@ -1,5 +1,5 @@
 import { CameraCalibration, ChromaKey, Calibration } from 'reality-mixer';
-import { CalibrationWindow, CalibrationWindowHeader } from './calibration-window.js';
+import { CalibrationWindow, CalibrationWindowHeader, CalibrationLink } from './calibration-window.js';
 import { CalibrationInput } from './calibration-input.js';
 import { VideoSizeSetup } from './video-size-setup.js';
 import { ChromaKeySetup } from './chroma-key-setup.js';
@@ -23,15 +23,7 @@ function CalibrationSetup(onCompleted) {
 
     let header = CalibrationWindowHeader("Mixed Reality Capture Setup");
 
-    let newCalibrationDiv = document.createElement("div");
-    newCalibrationDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
-
-    let createNewLink = document.createElement("a");
-    createNewLink.innerText = "Create new calibration";
-    createNewLink.href = "#";
-    createNewLink.style.color = "#EFEFEF";
-
-    createNewLink.onclick = function() {
+    let newCalibrationDiv = CalibrationLink("Create new calibration", function() {
         calibrationBackground.removeChild(calibrationWindow);
 
         let sizeSetup = VideoSizeSetup(
@@ -39,7 +31,7 @@ function CalibrationSetup(onCompleted) {
                 calibrationBackground.removeChild(sizeSetup);
 
                 let cKeySetup = ChromaKeySetup(videoWidth, videoHeight, 
-                    function(editor, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness) {
+                    function(editor, chromaKeyColor, chromaKeySimilarity, chromaKeySmoothness, crop) {
                         calibrationBackground.removeChild(cKeySetup);
 
                         let poseSetup = CameraPoseSetup(videoWidth, videoHeight, 
@@ -60,7 +52,8 @@ function CalibrationSetup(onCompleted) {
                                     chromaKey: {
                                         color: chromaKeyColor,
                                         similarity: chromaKeySimilarity,
-                                        smoothness: chromaKeySmoothness
+                                        smoothness: chromaKeySmoothness,
+                                        crop: crop
                                     },
                                     delay: delay
                                 };
@@ -85,20 +78,9 @@ function CalibrationSetup(onCompleted) {
         );
 
         calibrationBackground.appendChild(sizeSetup);
-        return false;
-    }
+    });
 
-    newCalibrationDiv.appendChild(createNewLink);
-
-    let loadCalibrationDiv = document.createElement("div");
-    loadCalibrationDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
-
-    let loadCalibrationLink = document.createElement("a");
-    loadCalibrationLink.innerText = "Load existing calibration";
-    loadCalibrationLink.href = "#";
-    loadCalibrationLink.style.color = "#EFEFEF";
-
-    loadCalibrationLink.onclick = function() {
+    let loadCalibrationDiv = CalibrationLink("Load existing calibration", function() {
         calibrationBackground.removeChild(calibrationWindow);
 
         let calibrationInput = CalibrationInput(function(editor, calibration) {
@@ -107,15 +89,9 @@ function CalibrationSetup(onCompleted) {
         });
 
         calibrationBackground.appendChild(calibrationInput);
-        return false;
-    }
+    });
 
-    loadCalibrationDiv.appendChild(loadCalibrationLink);
-
-    calibrationWindow.appendChild(header);
-    calibrationWindow.appendChild(newCalibrationDiv);
-    calibrationWindow.appendChild(loadCalibrationDiv);
-
+    calibrationWindow.append(header, newCalibrationDiv, loadCalibrationDiv);
     calibrationBackground.appendChild(calibrationWindow);
 
     return calibrationBackground;

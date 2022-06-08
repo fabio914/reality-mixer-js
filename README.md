@@ -62,7 +62,8 @@ const cameraCalibration = new MRC.CameraCalibration(
 const chromaKey = new MRC.ChromaKey(
     [0, 1, 0], // chroma key color (red, green, blue values from 0 to 1)
     0.25, // similarity (0 to 1)
-    0 // smoothness (0 to 1)
+    0, // smoothness (0 to 1)
+    [0, 0, 0, 0] // crop (left, right, bottom, top values from 0 to 1)
 );
  
 const calibration = new MRC.Calibration(
@@ -116,7 +117,8 @@ const json = `
     "chromaKey": {
         "color": [0, 1, 0],
         "similarity": 0.25,
-        "smoothness": 0
+        "smoothness": 0,
+        "crop": [0, 0, 0, 0]
     },
     "delay": 4
 }
