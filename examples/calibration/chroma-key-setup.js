@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { CalibrationWindow, CalibrationWindowHeader, CalibrationRangeInput } from './calibration-window.js';
+import { 
+    CalibrationWindow, CalibrationWindowHeader, CalibrationSection, CalibrationLink, CalibrationRangeInput 
+} from './calibration-window.js';
 
 function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     let chromaKeyColor = [0, 1, 0];
@@ -154,8 +156,7 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
 
     let header = CalibrationWindowHeader("Chroma Key Setup");
 
-    let colorDiv = document.createElement("div");
-    colorDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+    let colorDiv = CalibrationSection();
 
     let colorLabel = document.createElement("label");
     colorLabel.innerText = "Chroma Key Color";
@@ -169,8 +170,7 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
         chromaKeyColor = hexToRgb(this.value);
     }
 
-    colorDiv.appendChild(colorLabel);
-    colorDiv.appendChild(colorInput);
+    colorDiv.append(colorLabel, colorInput);
 
     let similarityDiv = CalibrationRangeInput("Similarity ", chromaKeySimilarity, function(newValue) {
         chromaKeySimilarity = newValue;
@@ -179,6 +179,8 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
     let smoothnessDiv = CalibrationRangeInput("Smoothness ", chromaKeySmoothness, function(newValue) {
         chromaKeySmoothness = newValue;
     });
+
+    let cropDiv = document.createElement("div");
 
     let cropTopDiv = CalibrationRangeInput("Crop Top   ", cropTop, function(newValue) {
         cropTop = newValue;
@@ -196,15 +198,15 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
         cropRight = newValue;
     });
 
-    let linkDiv = document.createElement("div");
-    linkDiv.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+    cropDiv.append(cropTopDiv, cropBottomDiv, cropLeftDiv, cropRightDiv);
+    cropDiv.style.display = "none";
 
-    let link = document.createElement("a");
-    link.innerText = "Continue";
-    link.href = "#";
-    link.style.color = "#EFEFEF";
+    let showCropDiv = CalibrationLink("More options", function() {
+        cropDiv.style.display = "block";
+        showCropDiv.style.display = "none";
+    });
 
-    link.onclick = function() {
+    let linkDiv = CalibrationLink("Continue", function() {
         onCompleted(
             chromaKeyBackground, 
             chromaKeyColor, 
@@ -212,21 +214,17 @@ function ChromaKeySetup(videoWidth, videoHeight, onCompleted) {
             chromaKeySmoothness,
             [cropLeft, cropRight, cropBottom, cropTop]
         );
-        return false;
-    }
+    });
 
-    linkDiv.appendChild(link);
-
-    calibrationWindow.appendChild(header);
-    calibrationWindow.appendChild(colorDiv);
-    calibrationWindow.appendChild(similarityDiv);
-    calibrationWindow.appendChild(smoothnessDiv);
-    calibrationWindow.appendChild(cropTopDiv);
-    calibrationWindow.appendChild(cropBottomDiv);
-    calibrationWindow.appendChild(cropLeftDiv);
-    calibrationWindow.appendChild(cropRightDiv);
-    
-    calibrationWindow.appendChild(linkDiv);
+    calibrationWindow.append(
+        header,
+        colorDiv,
+        similarityDiv,
+        smoothnessDiv,
+        showCropDiv,
+        cropDiv,
+        linkDiv
+    );
 
     chromaKeyBackground.appendChild(calibrationWindow);
     return chromaKeyBackground;

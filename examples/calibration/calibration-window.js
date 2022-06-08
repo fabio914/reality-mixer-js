@@ -24,6 +24,30 @@ function CalibrationWindowHeader(title) {
     return headerDiv;
 }
 
+function CalibrationSection() {
+    let divElement = document.createElement("div");
+    divElement.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+    return divElement;
+}
+
+function CalibrationLink(label, onClick) {
+    let linkDiv = CalibrationSection();
+
+    let link = document.createElement("a");
+    link.innerText = label;
+    link.href = "#";
+    link.style.color = "#EFEFEF";
+
+    link.onclick = function() {
+        onClick();
+        return false;
+    }
+
+    linkDiv.appendChild(link);
+
+    return linkDiv;
+}
+
 function CalibrationRangeInput(
     label,
     value,
@@ -32,8 +56,7 @@ function CalibrationRangeInput(
     maxValue = 1.0,
     step = 0.01
 ) {
-    let divElement = document.createElement("div");
-    divElement.style = "padding: 8px; white-space: pre-wrap; background-color: #50565E;";
+    let divElement = CalibrationSection();
 
     let labelElement = document.createElement("label");
     labelElement.innerText = label;
@@ -72,4 +95,4 @@ function CalibrationRangeInput(
     return divElement;
 }
 
-export { CalibrationWindow, CalibrationWindowHeader, CalibrationRangeInput };
+export { CalibrationWindow, CalibrationWindowHeader, CalibrationSection, CalibrationLink, CalibrationRangeInput };
