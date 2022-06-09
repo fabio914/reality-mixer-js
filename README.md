@@ -139,6 +139,3 @@ mixedRealityCapture = new MRC.MixedRealityCapture( calibration );
 ## TO-DOs
 
  - Continue iterating on the Calibration (fixes, delay, adustments, etc).
- 
- - Create a static website to host the examples.
- 

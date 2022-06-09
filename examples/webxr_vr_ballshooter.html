@@ -14,7 +14,7 @@
         <script type="importmap">
             {
                 "imports": {
-                    "three": "../node_modules/three/build/three.module.js",
+                    "three": "https://unpkg.com/three@0.140.0/build/three.module.js",
                     "reality-mixer": "../src/mrc.js"
                 }
             }
@@ -26,9 +26,9 @@
             import * as MRC from 'reality-mixer';
             import { CalibrationSetup } from './calibration/calibration-setup.js';
 
-            import { BoxLineGeometry } from '../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js';
-            import { VRButton } from '../node_modules/three/examples/jsm/webxr/VRButton.js';
-            import { XRControllerModelFactory } from '../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js';
+            import { BoxLineGeometry } from 'https://unpkg.com/three@0.140.0/examples/jsm/geometries/BoxLineGeometry.js';
+            import { VRButton } from 'https://unpkg.com/three@0.140.0/examples/jsm/webxr/VRButton.js';
+            import { XRControllerModelFactory } from 'https://unpkg.com/three@0.140.0/examples/jsm/webxr/XRControllerModelFactory.js';
 
             let mixedRealityCapture;
 

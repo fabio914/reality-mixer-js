@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { CalibrationWindow, CalibrationWindowHeader } from './calibration-window.js';
-import { VRButton } from '../../node_modules/three/examples/jsm/webxr/VRButton.js';
-import { XRControllerModelFactory } from '../../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js';
-import { BoxLineGeometry } from '../../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js';
+import { VRButton } from 'https://unpkg.com/three@0.140.0/examples/jsm/webxr/VRButton.js';
+import { XRControllerModelFactory } from 'https://unpkg.com/three@0.140.0/examples/jsm/webxr/XRControllerModelFactory.js';
+import { BoxLineGeometry } from 'https://unpkg.com/three@0.140.0/examples/jsm/geometries/BoxLineGeometry.js';
 
 function computeCalibration(
     videoWidth,
