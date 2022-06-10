@@ -10,20 +10,42 @@ Keep in mind that this is still just a prototype and that I'm not a frontend dev
 
 [YouTube video](https://youtu.be/t0TmLT84J_0)
 
-## Screenshots
+## Requirements
+
+ - PC VR headset that's compatible with [WebXR](https://immersiveweb.dev) (e.g. Oculus Rift S).
+
+ - Google Chrome.
+
+ - Webcam and a green screen. Alternatively, you can use your iPhone/iPad as a camera (without a green screen) with the [LIV Camera app](https://apps.apple.com/us/app/liv-camera/id1482671526) and [NDI Webcam Input](https://www.ndi.tv/tools/).
+
+## Examples
+
+ - Use the links below to launch one of the examples in your browser. 
+
+ - You'll need to follow [these instructions](#how-to-calibrate) to complete a calibration first.
+
+ - Your browser will ask for permission to access your camera, and it'll ask for permission to use your VR headset once you click on the "Enter VR" button.
 
 | Example | Screenshot |
 |---------|---------------|
-| webxr_vr_ballshooter | <img src="screenshots/webxr_vr_ballshooter.jpg" width="300" /> |
-| webxr_vr_paint | <img src="screenshots/webxr_vr_paint.jpg" width="300" /> | 
+| [webxr_vr_ballshooter](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_ballshooter.html) | <img src="screenshots/webxr_vr_ballshooter.jpg" width="300" /> |
+| [webxr_vr_paint](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_paint.html) | <img src="screenshots/webxr_vr_paint.jpg" width="300" /> | 
 
-## Requirements
+## How to calibrate
 
- - PC VR headset that's compatible with WebXR (e.g. Oculus Rift S).
- - Google Chrome.
- - Webcam and a green screen. Alternatively, you can use your iPhone/iPad as a camera (without a green screen) with the [LIV Camera app](https://apps.apple.com/us/app/liv-camera/id1482671526) and [NDI Webcam Input](https://www.ndi.tv/tools/).
+The calibration process has four steps:
 
-## How to test the example
+ - First, you'll need to input the image resolution of your webcam (e.g. 1920 x 1080).
+
+ - Second, you'll need to configure your chroma key. You can use the color picker to pick the color of your green screen, and then adjust the values of smoothness and similarity to make it become transparent. You can also click on "More options" to reveal other controls that allow you to crop out areas of the image outside of your green screen.
+
+ - The last step happens in VR, put your VR headset on and click on "Enter VR" when you're ready. First, you'll need to bring your right controller very close to the camera (so that it's aligned with the target on the image) and then press the trigger button. Now move away from the camera, position the right controller behind the target (make sure that the controller is at least 1.5m away from the camera), and then press the trigger button again. Repeat that for the third target, and then press the trigger button one last time to leave VR.
+
+- You should now see a window with a JSON text with your calibration. You can make some adjustments if you'd like. For example, you can change the "delay" value in case you notice that the video from the VR scene and the video from the Webcam are out of sync. Finally, you can click on the continue link and then on "Enter VR".
+
+You'll need to recalibrate whenever you change your guardian boundary / play area, change the position and orientation of your camera, or change your green screen. 
+
+## How to test these examples locally
 
  - Clone this repository.
  
@@ -34,10 +56,6 @@ Keep in mind that this is still just a prototype and that I'm not a frontend dev
  - WebXR and `navigator.mediaDevices` require HTTPS (unless you're accessing it via `localhost`). You could use a tool like [localtunnel](https://github.com/localtunnel/localtunnel) for testing. You can run `npm install -g localtunnel` to download it and then you can run `lt --port 8080 --subdomin 127.0.0.1` in a separate terminal.
  
  - Open your browser and navigate to `https://{your HTTPS domain}/examples/webxr_vr_ballshooter.html` (or `https://127.0.0.1:8080/examples/webxr_vr_ballshooter.html`)
-
- Your browser will ask for permission to access your camera, and it'll ask for permission to use your VR headset once you click on the WebXR button. 
- 
- You'll need to complete the calibration before starting the example, and you'll need to recalibrate whenever you change your guardian boundary / play area, change the position and orientation of your camera, or change your green screen.
 
  ## API
  
@@ -139,6 +157,3 @@ mixedRealityCapture = new MRC.MixedRealityCapture( calibration );
 ## TO-DOs
 
  - Continue iterating on the Calibration (fixes, delay, adustments, etc).
- 
- - Create a static website to host the examples.
- 
