@@ -26,10 +26,11 @@ Keep in mind that this is still just a prototype and that I'm not a frontend dev
 
  - Your browser will ask for permission to access your camera, and it'll ask for permission to use your VR headset once you click on the "Enter VR" button.
 
-| Example | Screenshot |
+| Example | GIF |
 |---------|---------------|
-| [webxr_vr_ballshooter](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_ballshooter.html) | <img src="screenshots/webxr_vr_ballshooter.jpg" width="300" /> |
-| [webxr_vr_paint](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_paint.html) | <img src="screenshots/webxr_vr_paint.jpg" width="300" /> | 
+| [webxr_vr_ballshooter](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_ballshooter.html) | <img src="screenshots/webxr_vr_ballshooter.gif" width="320" /> |
+| [webxr_vr_dragging](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_dragging.html) | <img src="screenshots/webxr_vr_dragging.gif" width="320" /> | 
+| [webxr_vr_paint](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_paint.html) | <img src="screenshots/webxr_vr_paint.gif" width="320" /> | 
 
 ## How to calibrate
 
