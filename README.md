@@ -28,8 +28,8 @@ Keep in mind that this is still just a prototype and that I'm not a frontend dev
 
 | Example | Screenshot |
 |---------|---------------|
-| [webxr_vr_ballshooter](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_ballshooter.html) | <img src="screenshots/webxr_vr_ballshooter.jpg" width="300" /> |
-| [webxr_vr_dragging](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_dragging.html) | <img src="screenshots/webxr_vr_dragging.gif" width="300" /> | 
+| [webxr_vr_ballshooter](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_ballshooter.html) | <img src="screenshots/webxr_vr_ballshooter.gif" width="320" /> |
+| [webxr_vr_dragging](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_dragging.html) | <img src="screenshots/webxr_vr_dragging.gif" width="320" /> | 
 | [webxr_vr_paint](https://fabio914.github.io/reality-mixer-js/examples/webxr_vr_paint.html) | <img src="screenshots/webxr_vr_paint.jpg" width="300" /> | 
 
 ## How to calibrate
