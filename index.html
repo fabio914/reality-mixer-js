@@ -13,21 +13,27 @@
 
             let windowDiv = CalibrationWindow();
 
-            let header = CalibrationWindowHeader("Reality Mixer JS - Examples");
+            const header = CalibrationWindowHeader("Reality Mixer JS - Examples");
             windowDiv.appendChild(header);
 
             const examples = [
                 "webxr_vr_ballshooter",
+                "webxr_vr_dragging",
                 "webxr_vr_paint"
             ];
 
             for (let example of examples) {
-                let exampleLink = CalibrationLink(example, function() {
+                const exampleLink = CalibrationLink(example, function() {
                     window.location.href = "examples/" + example + ".html";
                 });
                 windowDiv.appendChild(exampleLink);
             }
 
+            const githubLink = CalibrationLink("GitHub Repository", function() {
+                window.location.href = "https://github.com/fabio914/reality-mixer-js";
+            });
+
+            windowDiv.appendChild(githubLink);
             document.body.appendChild(windowDiv);
 
         </script>
