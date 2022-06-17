@@ -110,9 +110,7 @@ class MixedRealityCapture {
     #middleLayerMesh;
     #foregroundLayerMeshes;
 
-    #webcam;
-    #webcamCanvas; 
-    #canvasCtx; 
+    #webcam; 
     #webcamTexture;
 
     constructor(
@@ -139,29 +137,13 @@ class MixedRealityCapture {
             .getUserMedia(constraints)
             .then(function (mediaStream) {
                 webcam.srcObject = mediaStream;
-                webcam.onloadedmetadata = function (e) {
-                    webcam.setAttribute('autoplay', 'true');
-                    webcam.setAttribute('playsinline', 'true');
-                    webcam.play();
-                };
+                webcam.play();
             })
             .catch(function (err) {
                 alert(err.name + ': ' + err.message)
             });
 
-        let webcamCanvas = document.createElement('canvas');
-        webcamCanvas.width = 1024;
-        webcamCanvas.height = 1024;
-        this.#webcamCanvas = webcamCanvas;
-
-        let canvasCtx = webcamCanvas.getContext('2d');
-        canvasCtx.fillStyle = '#000000';
-        canvasCtx.fillRect(0, 0, webcamCanvas.width, webcamCanvas.height);
-        this.#canvasCtx = canvasCtx;
-
-        let webcamTexture = new THREE.Texture(webcamCanvas);
-        webcamTexture.minFilter = THREE.LinearFilter;
-        webcamTexture.magFilter = THREE.LinearFilter;
+        let webcamTexture = new THREE.VideoTexture(webcam);
         this.#webcamTexture = webcamTexture;
 
         // Creating Mixed Reality camera that will render to the foreground and background layers
@@ -266,12 +248,6 @@ class MixedRealityCapture {
 
         // Disable WebXR rendering
         xr.isPresenting = false;
-
-        // Update Webcam
-        this.#canvasCtx.drawImage(this.#webcam, 0, 0, this.#webcamCanvas.width, this.#webcamCanvas.height);
-
-        if (this.#webcamTexture) 
-            this.#webcamTexture.needsUpdate = true;
 
         // Update camera frustum (everything between the VR camera and the background)
         this.#camera.near = projectedDistance;
