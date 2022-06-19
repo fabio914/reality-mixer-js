@@ -93,14 +93,8 @@ const calibration = new MRC.Calibration(
 
 // ... Initialize your Three.js scene and renderer here ...
 
-// Hide your renderer when you want to display the Mixed Reality output
-renderer.domElement.style.display = "none";
-
 // Create a new Mixed Reality Capture session
 mixedRealityCapture = new MRC.MixedRealityCapture( calibration );
-
-// Add the Mixed Reality Output to the document
-document.body.appendChild( mixedRealityCapture.domElement );
 
 // ...
 
@@ -113,7 +107,7 @@ mixedRealityCapture.onWindowResize();
 
 renderer.render( scene, camera );
 
-mixedRealityCapture.render( renderer.xr, scene );
+mixedRealityCapture.render( renderer, scene );
 
 ```
 
