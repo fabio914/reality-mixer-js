@@ -151,10 +151,6 @@
                 renderer.xr.enabled = true;
                 container.appendChild( renderer.domElement );
 
-                // Hide original renderer and display Mixed Reality Capture output
-                renderer.domElement.style.display = "none";
-                document.body.appendChild( mixedRealityCapture.domElement );
-
                 //
 
                 document.body.appendChild( VRButton.createButton( renderer ) );
@@ -315,7 +311,7 @@
 
                 // Rendering Mixed Reality...
 
-                mixedRealityCapture.render( renderer.xr, scene );
+                mixedRealityCapture.render( renderer, scene );
             }
 
         </script>

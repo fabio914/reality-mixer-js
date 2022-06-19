@@ -104,7 +104,6 @@ class MixedRealityCapture {
 
     #outputCamera;
     #outputScene;
-    #outputRenderer;
 
     #backgroundLayerMeshes;
     #middleLayerMesh;
@@ -230,17 +229,6 @@ class MixedRealityCapture {
             this.#foregroundLayerMeshes[i].visible = false;
             this.#outputScene.add( this.#foregroundLayerMeshes[i] );
         }
-
-        // Creating renderer
-
-        this.#outputRenderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-        this.#outputRenderer.setPixelRatio( window.devicePixelRatio );
-        this.#outputRenderer.setSize( window.innerWidth, window.innerHeight );
-        this.#outputRenderer.outputEncoding = THREE.sRGBEncoding;
-    }
-
-    get domElement() {
-        return this.#outputRenderer.domElement;
     }
 
     onWindowResize() {
@@ -249,23 +237,25 @@ class MixedRealityCapture {
         this.#outputCamera.top = window.innerHeight / 2;
         this.#outputCamera.bottom = window.innerHeight / - 2;
         this.#outputCamera.updateProjectionMatrix();
-        this.#outputRenderer.setSize( window.innerWidth, window.innerHeight );
     }
 
-    render(xr, scene) {
+    render(renderer, scene) {
 
-        if (!xr.isPresenting) 
+        if (!renderer.xr.isPresenting) 
             return;
 
-        const vrCameraPosition = xr.getCamera().position;
+        const vrCameraPosition = renderer.xr.getCamera().position;
 
         let cameraForward = new THREE.Vector3( 0, 0, 0 );
         this.#camera.getWorldDirection( cameraForward );
 
         const projectedDistance = Math.max(cameraForward.dot(vrCameraPosition.sub(this.#camera.position)), this.#near);
 
+        // Store current render target
+        const currentRenderTarget = renderer.getRenderTarget();
+
         // Disable WebXR rendering
-        xr.isPresenting = false;
+        renderer.xr.isPresenting = false;
 
         // Update Webcam
         this.#canvasCtx.drawImage(this.#webcam, 0, 0, this.#webcamCanvas.width, this.#webcamCanvas.height);
@@ -279,11 +269,14 @@ class MixedRealityCapture {
         this.#camera.updateProjectionMatrix();
 
         // Render background layer to current render target
-        this.#outputRenderer.setRenderTarget( this.#backgroundRenderTargets[this.#currentRenderFrameIndex] );
-        this.#outputRenderer.render( scene, this.#camera );
+        renderer.setRenderTarget( this.#backgroundRenderTargets[this.#currentRenderFrameIndex] );
+        renderer.render( scene, this.#camera );
 
         // Save scene background and clear background
+        const currentClearAlpha = renderer.getClearAlpha();
         const originalBackgroundColor = scene.background;
+
+        renderer.setClearAlpha(0);
         scene.background = null;
 
         // Update camera frustum (everything between the mixed reality camera and the VR camera)
@@ -292,11 +285,12 @@ class MixedRealityCapture {
         this.#camera.updateProjectionMatrix();
 
         // Render foreground layer to current render target
-        this.#outputRenderer.setRenderTarget( this.#foregroundRenderTargets[this.#currentRenderFrameIndex] );
-        this.#outputRenderer.render( scene, this.#camera );
+        renderer.setRenderTarget( this.#foregroundRenderTargets[this.#currentRenderFrameIndex] );
+        renderer.render( scene, this.#camera );
 
         // Restore scene background
         scene.background = originalBackgroundColor;
+        renderer.setClearAlpha(currentClearAlpha);
 
         // FIXME: Colors are off.
 
@@ -305,8 +299,8 @@ class MixedRealityCapture {
         this.#foregroundLayerMeshes[this.#currentDisplayFrameIndex].visible = true;
 
         // Render composite output
-        this.#outputRenderer.setRenderTarget( null );
-        this.#outputRenderer.render( this.#outputScene, this.#outputCamera );
+        renderer.setRenderTarget( null );
+        renderer.render( this.#outputScene, this.#outputCamera );
 
         // Hide foreground and background layers
         this.#backgroundLayerMeshes[this.#currentDisplayFrameIndex].visible = false;
@@ -316,8 +310,11 @@ class MixedRealityCapture {
         this.#currentDisplayFrameIndex = (this.#currentDisplayFrameIndex + 1) % this.#numberOfFrames;
         this.#currentRenderFrameIndex =  (this.#currentRenderFrameIndex  + 1) % this.#numberOfFrames;
 
+        // Restore render target
+        renderer.setRenderTarget(currentRenderTarget);
+
         // Re-enable WebXR
-        xr.isPresenting = true;
+        renderer.xr.isPresenting = true;
     }
 
     // Chroma Key Shaders
